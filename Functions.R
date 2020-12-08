@@ -53,6 +53,5 @@ MultDataObjects_sheets <- function(k, filepath, basename = "data", col = NA,
       }
     }
   }
-  
 }
 
