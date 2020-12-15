@@ -57,20 +57,33 @@ MultDataObjects_sheets <- function(k, filepath, basename = "data", col = NA,
 
 
 getPPV <- function(kstudies=1000, alpha=.05, Power=.8, ratio.true.hypotheses=.3){
-  Pb <- ratio.true.hypotheses
-  noeffstudies <- (1-Pb)*kstudies
-  effstudies <- Pb*kstudies
   
-  ksig <- Power*effstudies + alpha*noeffstudies
-  knonsig <- (1-Power)*effstudies + (1-alpha)*noeffstudies
+  Pb <- ratio.true.hypotheses # the ratio of "true" hypotheses to all hypotheses (or P(B)) if we refer to the Bayesian Therem, with A
+                              #   being the event of a statistically significant test and B being the event of a genuine effect present)
   
-  falsepositives <- noeffstudies*alpha
-  falsenegatives <- effstudies*(1-Power)
-  truepositives <- effstudies*(Power)
-  truenegatives <- noeffstudies*(1-alpha)
+  noeffstudies <- (1-Pb)*kstudies # nr of studies assessing *no* genuine "true" effect
   
-  FDR <- falsepositives/ksig
-  PPV <- truepositives/ksig
+  effstudies <- Pb*kstudies # nr of studies assessing a genuine "true" effect
+  
+  
+  ksig <- Power*effstudies + alpha*noeffstudies # nr of studies with a statistically significant test 
+  
+  knonsig <- (1-Power)*effstudies + (1-alpha)*noeffstudies # nr of studies with *no* statistically significant test
+  
+  
+  falsepositives <- noeffstudies*alpha # nr of studies falsely identifying an effect (Type-I-error)
+  
+  falsenegatives <- effstudies*(1-Power) # nr of studies falsely missing to identify an effect (type-II-error)
+  
+  truepositives <- effstudies*(Power) # nr of studies correctly identifying an effect
+  
+  truenegatives <- noeffstudies*(1-alpha) # nr of studies correctly missing to identify an effect
+  
+  
+  FDR <- falsepositives/ksig # False Discovery Rate
+  
+  PPV <- truepositives/ksig # Posterior Predictive Value (Probability of dealing with a genuine "true" effect, when a statistically
+                            #   significant test is achieved.)
   
   return(list(FDR = FDR,
               PPV = PPV))
