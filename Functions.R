@@ -55,3 +55,23 @@ MultDataObjects_sheets <- function(k, filepath, basename = "data", col = NA,
   }
 }
 
+
+getPPV <- function(kstudies=1000, alpha=.05, Power=.8, ratio.true.hypotheses=.3){
+  Pb <- ratio.true.hypotheses
+  noeffstudies <- (1-Pb)*kstudies
+  effstudies <- Pb*kstudies
+  
+  ksig <- Power*effstudies + alpha*noeffstudies
+  knonsig <- (1-Power)*effstudies + (1-alpha)*noeffstudies
+  
+  falsepositives <- noeffstudies*alpha
+  falsenegatives <- effstudies*(1-Power)
+  truepositives <- effstudies*(Power)
+  truenegatives <- noeffstudies*(1-alpha)
+  
+  FDR <- falsepositives/ksig
+  PPV <- truepositives/ksig
+  
+  return(list(FDR = FDR,
+              PPV = PPV))
+}
